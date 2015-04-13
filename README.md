@@ -81,6 +81,7 @@ Works? How to enable?
 
 ## Other topics
 Progress bars
+Uploading whole folders
 Size
 Immediate preview: http://www.javascripture.com/FileReader
 Is file upload resume possible?

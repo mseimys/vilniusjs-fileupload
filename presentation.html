@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Vilnius.js #15 - File upload</title>
+
+		<meta name="description" content="File upload">
+		<meta name="author" content="Matas Seimys">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="bower_components/reveal.js/css/theme/white.css" id="theme">
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
+		<style>
+		.reveal section img {
+			border: 0;
+		}
+		</style>
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>File uploads</h1>
+					<h5>Vilnius.js Meetup #15</h5>
+					<blockquote cite="http://www.azlyrics.com/lyrics/daftpunk/technologic.html" style="font-size: 0.7em;">
+Plug it, play it, burn it, rip it,<br>
+Drag and drop it, zip - unzip it,<br>
+Lock it, fill it, call it, find it,<br>
+View it, code it, jam - unlock it... <br>
+-- <b>Daft Punk &ldquo;Technologic&rdquo;</b>
+					</blockquote>
+					<p>
+						<small><a href="http://matas.seimys.com">Matas Seimys</a><br><a href="http://twitter.com/mseimys">@mseimys</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>File uploads?</h2>
+					<p class="fragment"><i>Let me just google it...</i></p>
+					<ul>
+						<li class="fragment">How to do it with my framework X/Y/Z?</li>
+						<li class="fragment">Why so complicated?</li>
+						<li class="fragment">Do I still need this?</li>
+						<li class="fragment">How should I process that on backend?</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Old ways of uploading</h2>
+						<p>Picasa and Google docs</p>
+						<img src="images/picasa-web-upload.png">
+						<img src="images/google_docs_old.jpg">
+					</section>
+					<section>
+						<h2>More</h2>
+						<p>.</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Current trends</h2>
+						<img src="images/gooogle-docs">
+						<img src="images/facebook">
+					</section>
+					<section>
+						<img src="images/aws">
+						<img src="images/rackspace">
+					</section>
+				</section>
+
+				<section>
+					<h2>"Web Standards"</h2>
+					<p>
+						<q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q>
+					</p>
+				</section>
+
+				<section>
+					<h2>Upload with FormData</h2>
+					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+var fd = new FormData();
+fd.append('file', input.files[0]);
+
+$.ajax({
+  url: 'http://localhost:3000/upload',
+  data: fd,
+  processData: false,
+  contentType: false,
+  type: 'POST',
+  success: function(data){
+    alert(data);
+  }
+});
+					</code></pre>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="/bower_components/reveal.js/lib/js/head.min.js"></script>
+		<script src="/bower_components/reveal.js/js/reveal.js"></script>
+
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: '/bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '/bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '/bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

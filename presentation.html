@@ -42,43 +42,89 @@ View it, code it, jam - unlock it... <br>
 				</section>
 
 				<section>
+					<p>About me, my company, LaTeX?</p>
+				</section>
+
+				<section>
 					<h2>File uploads?</h2>
-					<p class="fragment"><i>Let me just google it...</i></p>
+					<p><i>Let me just google it...</i></p>
 					<ul>
-						<li class="fragment">How to do it with my framework X/Y/Z?</li>
+						<li class="fragment">How to do it on my framework X/Y/Z?</li>
 						<li class="fragment">Why so complicated?</li>
-						<li class="fragment">Do I still need this?</li>
+						<li class="fragment">Is this still relevant? Do I need it?</li>
 						<li class="fragment">How should I process that on backend?</li>
 					</ul>
 				</section>
 
 				<section>
-					<section>
-						<h2>Old ways of uploading</h2>
-						<p>Picasa and Google docs</p>
-						<img src="images/picasa-web-upload.png">
-						<img src="images/google_docs_old.jpg">
-					</section>
-					<section>
-						<h2>More</h2>
-						<p>.</p>
-					</section>
+					<h2>File uploads!</h2>
+					<p>They are changing with the rest of web technologies</p>
+					<p>Quite important, especially in enterprise software</p>
+				</section>
+
+				<section>
+					<h2>Old forms for uploading files</h2>
+					<table>
+						<tr>
+							<td>
+								<small>Picasa and Google docs ~2010</small>
+							</td>
+							<td>
+								<img src="images/picasa-web-upload.png">
+								<img src="images/google_docs_old.jpg">
+							</td>
+						</tr>
+					</table>
 				</section>
 
 				<section>
 					<section>
-						<h2>Current trends</h2>
-						<img src="images/gooogle-docs">
-						<img src="images/facebook">
+						<h3>Current trends</h3>
+						<div>Google Docs image insert</div>
+						<img src="images/google_image_insert.jpg">
 					</section>
 					<section>
-						<img src="images/aws">
-						<img src="images/rackspace">
+						<h3>Current trends</h3>
+						<div>Facebook photo and file upload</div>
+						<img src="images/facebook_photo_upload.jpg">
+						<img src="images/facebook_file_upload.png">
 					</section>
+					<!--
+					<section>
+						<h3>Current trends</h3>
+						<table><tr><td>
+							<img src="images/aws_upload.jpg">
+						</td><td>
+							<img src="images/rackspace_upload.jpg">
+						</td></tr></table>
+					</section>
+					-->
 				</section>
 
 				<section>
-					<h2>"Web Standards"</h2>
+					<h2>History</h2>
+					<div style="text-align: left; margin-left: 50px">
+						<p>1993: HTML is born</p>
+						<p>1995: <code style="color: #400">&lt;input type="file"&gt;</code> appears</p>
+						<p>~2000: AJAX introduced - XMLHttpRequest</p>
+						<p>~2010: multiple files can be selected</p>
+						<p>2010-2011: HTML5 File API</p>
+						<p>2011: WebSockets standardized</p>
+					</div>
+				</section>
+
+				<section>
+					<h2>Future?</h2>
+					<ul>
+						<li>Less and less files on physical discs</li>
+						<li>Upload from cloud of your choice</li>
+						<li><code style="color: #400">&lt;input type="cloud"&gt;</code></li>
+						<li>Anyone up for writing a nice library?</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Web Standards</h2>
 					<p>
 						<q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
 						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q>
@@ -86,10 +132,93 @@ View it, code it, jam - unlock it... <br>
 				</section>
 
 				<section>
-					<h2>Upload with FormData</h2>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+					<section>
+						<h2>Textbook Example</h2>
+						<pre><code class="html" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+  <input type="file" id="myfile" name="myfile">
+  <input type="submit" value="Upload" name="submit">
+</form>
+						</code></pre>
+					</section>
+					<section>
+						<h4>enctype=<br>"application/x-www-form-urlencoded"</h4>
+						<img src="images/x-www-form-urlencoded.png">
+						<p>Default, simple encoding: name=value strings separated by ampersands (&amp;) and uses special escape.
+						</p>
+					</section>
+					<section>
+						<h4>enctype=<br>"multipart/form-data"</h4>
+						<img src="images/multipart-formdata.png">
+						<p>Each form field has certain structure and is separated by special boundary. <i>Binary file upload!</i>
+						</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Simple server-side</h2>
+						<pre><code class="javascript" data-trim>
+var multer = require('multer');
+
+app.use(multer({
+  dest: './tmp',
+  putSingleFilesInArray: true
+}));
+
+app.post('/upload', function (req, res) {
+  req.files.myfile.forEach(function(item) {
+    // Do something with each file
+    console.log(item.originalname + " uploaded to " + item.path);
+  });
+  res.redirect("back");
+});
+						</code></pre>
+					</section>
+					<section>
+						<h4>Post/Redirect/Get design pattern</h4>
+						<img src="images/post_redirect_get.png">
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<h2>Async Upload</h2>
+						<pre><code class="html" data-trim>
+<form method="POST" action="/upload"
+
+	enctype="multipart/form-data" id="myform">
+  <input type="file" id="myfile" name="myfile">
+  <input type="submit" value="Upload" name="submit">
+</form>
+						</code></pre>
+<pre><code class="javascript" data-trim>
+$.post("/upload", $("#myform").serialize(), function(data) {
+  $(".result").html(data);
+});
+						</code></pre>
+					</section>
+					<section>
+						<h2>Upload hack: iframe</h2>
+						<p></p>
+					</section>
+				</section>
+
+
+
+				<section>
+					<section>
+						<h2>HTML5 FormData</h2>
+						<pre><code class="html" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+  <input type="file" id="myfile" name="myfile">
+  <input type="submit" value="Upload" name="submit">
+</form>
+						</code></pre>
+						<pre><code class="javascript" data-trim>
 var fd = new FormData();
-fd.append('file', input.files[0]);
+fd.append('myfile', input.files[0]);
 
 $.ajax({
   url: 'http://localhost:3000/upload',
@@ -98,12 +227,32 @@ $.ajax({
   contentType: false,
   type: 'POST',
   success: function(data){
-    alert(data);
+    alert("File(s) uploaded!");
   }
 });
-					</code></pre>
+								</code></pre>
+					</section>
+					<section>
+						<h4></h4>
+						<p></p>
+					</section>
 				</section>
 
+				<section>
+					<h2>...</h2>
+					<p>
+Progress bars <br>
+Uploading whole folders <br>
+Is file upload resume possible? <br>
+Immediate preview: http://www.javascripture.com/FileReader <br>
+File upload through WebSockets API <br>
+Streaming <br>
+HTML/2.0 <br>
+Cross-domain uploads <br>
+jquery File upload plugin <br>
+microlibs <br>
+</p>
+				</section>
 			</div>
 
 		</div>

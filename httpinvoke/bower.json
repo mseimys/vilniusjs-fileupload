@@ -1,0 +1,23 @@
+{
+  "name": "demo",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mseimys/vilniusjs-fileupload",
+  "authors": [
+    "Vytautas Jakutis <jakutis@wix.com>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "httpinvoke": "~1.4.0"
+  }
+}

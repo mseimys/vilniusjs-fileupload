@@ -18,6 +18,7 @@
     "tests"
   ],
   "dependencies": {
-    "httpinvoke": "~1.4.0"
+    "httpinvoke": "~1.4.0",
+    "es5-shim": "~4.1.1"
   }
 }

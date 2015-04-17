@@ -10,10 +10,16 @@ state = {
     'files': {}
 }
 
+@app.route("/multipart_files", methods=['POST'])
+def multipart_files():
+    name = request.files.keys()[0]
+    state['files'][name] = request.files[name].stream.read()
+    return "done"
+
 @app.route("/files/<name>", methods=['GET', 'POST'])
 def files(name):
     if request.method == 'POST':
-        state['files'][name] = bytes(request.stream.read())
+        state['files'][name] = request.stream.read()
         return Response(status=204)
     else:
         response = make_response(state['files'][name])

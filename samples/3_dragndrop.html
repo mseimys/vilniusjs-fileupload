@@ -1,0 +1,52 @@
+<style>
+    #dropzone {
+        text-align: center;
+        padding: 1em;
+        margin: 1em 0;
+        color: #555;
+        border: 2px dotted #555;
+        border-radius: 7px;
+        cursor: default;
+    }
+    #dropzone.hover {
+        border-color: #f00;
+        border-style: solid;
+    }
+</style>
+<h1>Form with drag and drop</h1>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" id="myfile" name="myfile">
+    <div id="dropzone">... or drop files here.</div>
+    <input type="submit" value="Upload" name="submit">
+</form>
+<script>
+var dropzone = document.getElementById('dropzone');
+var myfile = document.getElementById('myfile');
+
+function handleFiles(files) {
+    dropzone.innerHTML = "";
+    for (var i = 0, f; f = files[i]; i++) {
+        dropzone.innerHTML += f.name + " (" + f.size + ") <br>";
+    }
+    // Upload files
+}
+
+function FileDragHover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.target.className = (e.type == "dragover" ? "hover" : "");
+}
+
+function FileSelectHandler(e) {
+    // cancel event and hover styling
+    FileDragHover(e);
+    // fetch FileList object
+    var files = e.target.files || e.dataTransfer.files;
+    handleFiles(files);
+}
+
+dropzone.addEventListener("dragover", FileDragHover, false);
+dropzone.addEventListener("dragenter", FileDragHover, false);
+dropzone.addEventListener("drop", FileSelectHandler, false);
+myfile.addEventListener("change", FileSelectHandler, false);
+</script>

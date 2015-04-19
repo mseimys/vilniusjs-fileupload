@@ -1,0 +1,12 @@
+<h1>iframe hack</h1>
+<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
+<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+<script>
+    var iframe = document.getElementById('uploadTrg');
+    iframe.addEventListener('load', function(){
+        alert("The file is uploaded!");
+    });
+</script>

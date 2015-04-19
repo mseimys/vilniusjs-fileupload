@@ -20,6 +20,12 @@
         .reveal section img {
             border: 0;
         }
+        .reveal pre code {
+            word-wrap: break-word;
+        }
+        .reveal pre {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -55,11 +61,11 @@
             <h2>File uploads?</h2>
             <p><i>Let me just google it...</i></p>
             <!-- reaction -->
-            <ul>
-                <li class="fragment">How to do it on my framework X/Y/Z?</li>
-                <li class="fragment">Why so complicated?</li>
-                <li class="fragment">Is this still relevant? Do I need it?</li>
-                <li class="fragment">How should I process that on backend?</li>
+            <ul class="fragment">
+                <li>How to do it on my framework X/Y/Z?</li>
+                <li>Why so complicated?</li>
+                <li>Is this still relevant? Do I need it?</li>
+                <li>How should I process that on backend?</li>
             </ul>
         </section>
 
@@ -123,6 +129,10 @@
         </section>
 
         <section>
+            <img class="stretch" src="images/usage_share_of_web_browsers.png">
+        </section>
+
+        <section>
             <h2>Future?</h2>
             <ul>
                 <li>Less and less files on physical discs</li>
@@ -143,11 +153,11 @@
         <section>
             <section>
                 <h2>Textbook Example</h2>
-						<pre><code class="html" data-trim>
-                            <form method="POST" action="/upload" enctype="multipart/form-data">
-                                <input type="file" id="myfile" name="myfile">
-                                <input type="submit" value="Upload" name="submit">
-                            </form>
+                        <pre><code class="html" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
                         </code></pre>
             </section>
             <section>
@@ -166,85 +176,199 @@
 
         <section>
             <section>
-                <h2>Simple server-side</h2>
-						<pre><code class="javascript" data-trim>
-                            var multer = require('multer');
+                <h2>Simple Node.js server-side</h2>
+                        <pre><code class="javascript stretch" data-trim>
+...
+var multer = require('multer');
 
-                            app.use(multer({
-                            dest: './tmp',
-                            putSingleFilesInArray: true
-                            }));
+app.use(multer({
+    dest: './tmp',
+    putSingleFilesInArray: true
+}));
 
-                            app.post('/upload', function (req, res) {
-                            req.files.myfile.forEach(function(item) {
-                            // Do something with each file
-                            console.log(item.originalname + " uploaded to " + item.path);
-                            });
-                            res.redirect("back");
-                            });
+app.post('/upload', function (req, res) {
+    req.files.myfile.forEach(function(item) {
+        // Do something with each file
+        console.log(item.originalname + " uploaded to " + item.path);
+    });
+    res.redirect("back");
+});
+...
+                        </code></pre>
+            </section>
+            <section>
+                <h2>Simple Python server-side</h2>
+                        <pre><code class="python stretch" data-trim>
+import os
+from flask import Flask, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__, static_folder='')
+
+UPLOAD_FOLDER = '/tmp'
+
+@app.route("/upload", methods=['POST'])
+def upload():
+    for fh in request.files.getlist('myfile'):
+        filename = secure_filename(fh.filename)
+        fh.save(os.path.join(UPLOAD_FOLDER, filename))
+        app.logger.info("Uploaded %s", filename)
+    return redirect(url_for('index'))
+
+@app.route("/")
+def index():
+    return app.send_static_file("0_simple.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
                         </code></pre>
             </section>
             <section>
                 <h4>Post/Redirect/Get design pattern</h4>
                 <img src="images/post_redirect_get.png">
             </section>
-
         </section>
 
         <section>
             <section>
+                <h2>Uploading Asynchronously</h2>
+                <p style="color:#666;">&lt;!-- here be list of benefits --&gt;</p>
+                <img src="reactions/facepalm.gif">
+            </section>
+            <section>
                 <h2>Async Upload</h2>
-						<pre><code class="html" data-trim>
-                            <form method="POST" action="/upload"
-
-                                  enctype="multipart/form-data" id="myform">
-                                <input type="file" id="myfile" name="myfile">
-                                <input type="submit" value="Upload" name="submit">
-                            </form>
-                        </code></pre>
-<pre><code class="javascript" data-trim>
+                    <pre><code class="html stretch" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
+    <input type="file" id="myfile" name="myfile">
+    <button id="upload-file">Upload!</button>
+</form>
+                    </code></pre>
+                    <pre><code class="javascript" data-trim>
+$('#upload-file').on('click', function(e){
+    e.preventDefault();
     $.post("/upload", $("#myform").serialize(), function(data) {
-    $(".result").html(data);
+        // Successfully uploaded data!?
     });
-</code></pre>
+});
+                    </code></pre>
+                    <p class="fragment">Wrong!</p>
             </section>
             <section>
                 <h2>Upload hack: iframe</h2>
-                <p></p>
+                <pre><code class="html stretch">
+<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
+<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+<script>
+    var iframe = document.getElementById('uploadTrg');
+    iframe.addEventListener('load', function(){
+        alert("The file is uploaded!");
+    });
+</script>
+                </code></pre>
             </section>
         </section>
 
 
+        <section>
+            <section>
+                <h2>Drag and drop it</h2>
+                <h4>HTML</h4>
+                <pre><code class="html" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" id="myfile" name="myfile">
+    <div id="dropzone">
+        ... or drop files here.
+    </div>
+    <input type="submit" value="Upload" name="submit">
+</form>
+                </code></pre>
+            </section>
+            <section>
+                <h4>Drag and drop: JavaScript</h4>
+                <pre><code class="javascript stretch" data-trim>
+var dropzone = document.getElementById('dropzone');
+
+function FileDragHover(e) {
+    // dropped file is opened in browser by default
+    e.stopPropagation();
+    e.preventDefault();
+    // proper hover styling is really important!!
+    e.target.className = (e.type == "dragover" ? "hover" : "");
+}
+
+function FileSelectHandler(e) {
+    // cancel event and hover styling
+    FileDragHover(e);
+    // fetch FileList (HTML5) object
+    var files = e.target.files || e.dataTransfer.files;
+    handleFiles(files);
+}
+
+dropzone.addEventListener("dragover", FileDragHover, false);
+dropzone.addEventListener("dragenter", FileDragHover, false);
+dropzone.addEventListener("drop", FileSelectHandler, false);
+                </code></pre>
+            </section>
+        </section>
+
+
+        <section>
+            <h2>Cross-site file uploads</h2>
+            <p>Say you want to upload file to <b>http://yoursharedstorage.com</b></p>
+            <p>No changes are needed to client/frontend</p>
+            <p>But storage server must reply to POST/OPTIONS with:</p>
+            <pre><code data-trim>
+Access-Control-Allow-Origin: http://yourothersite.com
+Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description
+            </code></pre>
+        </section>
 
         <section>
             <section>
                 <h2>HTML5 FormData</h2>
-						<pre><code class="html" data-trim>
-                            <form method="POST" action="/upload" enctype="multipart/form-data">
-                                <input type="file" id="myfile" name="myfile">
-                                <input type="submit" value="Upload" name="submit">
-                            </form>
-                        </code></pre>
-						<pre><code class="javascript" data-trim>
-                            var fd = new FormData();
-                            fd.append('myfile', input.files[0]);
+                    <pre><code class="html" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+                    </code></pre>
+                    <pre><code class="javascript" data-trim>
+var fd = new FormData();
+fd.append('myfile', input.files[0]);
 
-                            $.ajax({
-                            url: 'http://localhost:3000/upload',
-                            data: fd,
-                            processData: false,
-                            contentType: false,
-                            type: 'POST',
-                            success: function(data){
-                            alert("File(s) uploaded!");
-                            }
-                            });
-                        </code></pre>
+$.ajax({
+    url: 'http://localhost:3000/upload',
+    data: fd,
+    processData: false,
+    contentType: false,
+    type: 'POST',
+    success: function(data){
+        alert("File(s) uploaded!");
+    }
+});
+                    </code></pre>
             </section>
             <section>
-                <h4></h4>
-                <p></p>
+                <h4>File API support check</h4>
+                <p>
+                    <pre><code class="javascript">
+// Check for the various File API support.
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    // Great success! All the File APIs are supported.
+} else {
+    alert('The File APIs are not fully supported in this browser.');
+}
+            </code></pre>
+                </p>
             </section>
+        </section>
+
+        <section>
+            <h2>Security</h2>
+            <p><code>&lt;input type=file /&gt;</code> is readonly after selecting the file in >= IE8, for security reasons</p>
         </section>
 
         <section>
@@ -255,12 +379,31 @@
                 Is file upload resume possible? <br>
                 Immediate preview: http://www.javascripture.com/FileReader <br>
                 File upload through WebSockets API <br>
-                Streaming <br>
-                HTML/2.0 <br>
-                Cross-domain uploads <br>
                 jquery File upload plugin <br>
                 microlibs <br>
             </p>
+        </section>
+
+        <section>
+            <h2>Ideas for future talks</h2>
+            <p>
+                <b>HTTP/2</b>
+                <small>Pushing content, performance (minification/merging requests)</small>
+            </p>
+            <p>
+                <b>WebRTC</b>
+                <small>Web Real-Time Communication: voice, video, p2p file sharing</small>
+            </p>
+            <p>
+                <b>WebSockets Upload</b>
+                <small>Using sockets to upload files and their chunks</small>
+            </p>
+            <p>...</p>
+        </section>
+
+        <section>
+            <h2>Resources</h2>
+            <p>https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support</p>
         </section>
     </div>
 
@@ -285,7 +428,7 @@
             { src: '/bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
             { src: '/bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
             { src: '/bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
+            { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
         ]
     });
 

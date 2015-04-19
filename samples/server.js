@@ -21,7 +21,7 @@ app.post('/upload', function (req, res) {
         console.log(item.originalname + " uploaded to " + item.path);
     });
     res.redirect("back");
-})
+});
 
 var server = app.listen(3000, function () {
     var host = server.address().address;

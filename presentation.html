@@ -22,6 +22,7 @@
         }
         .reveal pre code {
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
         .reveal pre {
             width: 100%;
@@ -255,7 +256,7 @@ $('#upload-file').on('click', function(e){
             </section>
             <section>
                 <h2>Upload hack: iframe</h2>
-                <pre><code class="html stretch">
+                <pre><code class="html stretch" data-trim>
 <iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
 <form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
     <input type="file" id="myfile" name="myfile">
@@ -270,7 +271,6 @@ $('#upload-file').on('click', function(e){
                 </code></pre>
             </section>
         </section>
-
 
         <section>
             <section>
@@ -328,6 +328,37 @@ Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, 
 
         <section>
             <section>
+                <h2 style="text-transform: none;">XMLHttpRequest(s)</h2>
+                <p>First XMLHttpRequest (~2006)</p>
+                <p>XMLHttpRequest 2 already has 90% support</p>
+                <p>XMLHttpRequest 2 isn't HTML5</p>
+                <p>...</p>
+            </section>
+            <section>
+                <h2>File API</h2>
+                <p style="color: #060">Browser support: 89%+</p>
+                <ul>
+                    <li><b>File</b> - readonly attributes of file on disk</li>
+                    <li><b>FileList</b> - list of File objects ~ &lt;input type="file" multiple&gt;</li>
+                    <li><b>Blob</b> - raw binary data, access to range of bytes</li>
+                    <li><b>FileReader</b> - interface/events for reading Files and Blobs</li>
+                </ul>
+            </section>
+            <section>
+                <h4>File API support check</h4>
+                <pre><code class="javascript" data-trim>
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    // Great success! All the File APIs are supported.
+} else {
+    // This is the code you will throw away... someday
+}
+                </code></pre>
+            </section>
+        </section>
+
+
+        <section>
+            <section>
                 <h2>HTML5 FormData</h2>
                     <pre><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data">
@@ -339,30 +370,68 @@ Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, 
 var fd = new FormData();
 fd.append('myfile', input.files[0]);
 
-$.ajax({
-    url: 'http://localhost:3000/upload',
-    data: fd,
-    processData: false,
-    contentType: false,
-    type: 'POST',
-    success: function(data){
-        alert("File(s) uploaded!");
-    }
-});
+var xhr = new XMLHttpRequest();
+xhr.onload = function() {
+    alert("File uploaded!");
+};
+xhr.open("POST", "/upload");
+xhr.send(fd);
                     </code></pre>
             </section>
             <section>
-                <h4>File API support check</h4>
-                <p>
-                    <pre><code class="javascript">
-// Check for the various File API support.
-if (window.File && window.FileReader && window.FileList && window.Blob) {
-    // Great success! All the File APIs are supported.
-} else {
-    alert('The File APIs are not fully supported in this browser.');
+                <h4>Upload progress</h4>
+                <div style="font-size: 0.7em; color: #060;">Browser support: 86%+</div>
+                <pre><code class="html" style="font-size: 0.7em;" data-trim>
+<form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+<progress id="myprogress" max="100" value="0"></progress>
+                </code></pre>
+                <pre><code class="javascript stretch" style="font-size: 0.7em;" data-trim>
+var myform = document.getElementById('myform');
+var myprogress = document.getElementById('myprogress');
+myform.addEventListener("submit", function handleFormSubmit(e) {
+    e.preventDefault();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        alert("File uploaded!");
+    };
+    xhr.upload.onprogress = function(pe) {  // Progress Event!!
+        if (pe.lengthComputable) {
+            myprogress.value = (pe.loaded / pe.total) * 100;
+            myprogress.textContent = myprogress.value;  // Fallback
+        }
+    };
+    xhr.open(myform.method, myform.action);
+    xhr.send(new FormData(myform));
+}, false);
+                </code></pre>
+            </section>
+            <section>
+                <h2>Upload file by chunks</h2>
+                <pre><code class="javascript stretch" data-trim>
+function upload(blobOrFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/server', true);
+    xhr.onload = function(e) { ... };
+    xhr.send(blobOrFile);
 }
-            </code></pre>
-                </p>
+var input = document.getElementById('myfile');
+input.addEventListener('change', function(e) {
+    var blob = this.files[0];
+    const BYTES_PER_CHUNK = 1024 * 1024;  // 1MB chunk sizes.
+    const SIZE = blob.size;
+    var start = 0;
+    var end = BYTES_PER_CHUNK;
+
+    while(start < SIZE) {
+        upload(blob.slice(start, end));
+        start = end;
+        end = start + BYTES_PER_CHUNK;
+    }
+}, false);
+                </code></pre>
             </section>
         </section>
 
@@ -404,6 +473,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
         <section>
             <h2>Resources</h2>
             <p>https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support</p>
+            <p>http://www.html5rocks.com/en/tutorials/file/xhr2/</p>
         </section>
     </div>
 
@@ -428,7 +498,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
             { src: '/bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
             { src: '/bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
             { src: '/bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
+            { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
         ]
     });
 

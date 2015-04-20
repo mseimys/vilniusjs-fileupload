@@ -22,7 +22,8 @@ def upload():
 
 @app.route("/")
 def index():
-    items = ['<a href="/{0}">{0}</a>'.format(x) for x in ['simple', 'async', 'iframe', 'dnd']]
+    items = ['<a href="/{0}">{0}</a>'.format(x)
+             for x in ['simple', 'async', 'iframe', 'dnd', 'progress']]
     return "<br>".join(items)
 
 @app.route("/simple")
@@ -40,6 +41,10 @@ def iframe():
 @app.route("/dnd")
 def dnd():
     return app.send_static_file("3_dragndrop.html")
+
+@app.route("/progress")
+def progress():
+    return app.send_static_file("4_progress.html")
 
 
 if __name__ == "__main__":

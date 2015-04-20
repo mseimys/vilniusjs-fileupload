@@ -6,7 +6,10 @@
 </form>
 <script>
     var iframe = document.getElementById('uploadTrg');
-    iframe.addEventListener('load', function(){
-        alert("The file is uploaded!");
+    var input = document.getElementById('myfile');
+    input.addEventListener('change', function() {
+        iframe.addEventListener('load', function(){
+            alert("The file is uploaded!");
+        });
     });
 </script>

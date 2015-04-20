@@ -1,0 +1,25 @@
+<h1>Upload Progress</h1>
+<form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+<progress id="myprogress" max="100" value="0"></progress>
+<script>
+var myform = document.getElementById('myform');
+var myprogress = document.getElementById('myprogress');
+myform.addEventListener("submit", function handleFormSubmit(e) {
+    e.preventDefault();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        alert("File uploaded!");
+    };
+    xhr.upload.onprogress = function(pe) {  // Progress Event!!
+        if (pe.lengthComputable) {
+            myprogress.value = (pe.loaded / pe.total) * 100;
+            myprogress.textContent = myprogress.value;  // Fallback
+        }
+    };
+    xhr.open(myform.method, myform.action);
+    xhr.send(new FormData(myform));
+}, false);
+</script>

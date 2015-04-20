@@ -8,21 +8,17 @@ UPLOAD_FOLDER = '/tmp'
 
 @app.route("/upload", methods=['POST'])
 def upload():
+    count = 0
     for fh in request.files.getlist('myfile'):
         if fh.filename:
             filename = secure_filename(fh.filename)
             fh.save(os.path.join(UPLOAD_FOLDER, filename))
+            count += 1
             app.logger.info("Uploaded %s", filename)
-    return redirect(url_for('index'))
-
-@app.route("/upload_async", methods=['POST'])
-def upload_async():
-    for fh in request.files.getlist('myfile'):
-        if fh.filename:
-            filename = secure_filename(fh.filename)
-            fh.save(os.path.join(UPLOAD_FOLDER, filename))
-            app.logger.info("Uploaded %s", filename)
-    return jsonify(message="Success")
+    if request.is_xhr:
+        return jsonify(message="{0} files uploaded".format(count))
+    else:
+        return redirect(url_for('index'))
 
 @app.route("/")
 def index():

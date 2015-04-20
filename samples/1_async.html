@@ -10,7 +10,7 @@ $(function() {
     $('#upload-file').on('click', function(e){
         e.preventDefault();
         console.log("Uploading!");
-        $.post("/upload_async", $("#myform").serialize(), function(data) {
+        $.post("/upload", $("#myform").serialize(), function(data) {
             $(".result").html(data.message);
         });
     });

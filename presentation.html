@@ -55,7 +55,7 @@
         </section>
 
         <section>
-            <p>About me, my company, LaTeX?</p>
+            <p>About me, my company, LaTeX</p>
         </section>
 
         <section>
@@ -63,8 +63,8 @@
             <p><i>Let me just google it...</i></p>
             <!-- reaction -->
             <ul class="fragment">
-                <li>How to do it on my framework X/Y/Z?</li>
                 <li>Why so complicated?</li>
+                <li>How to do it on my framework X/Y/Z?</li>
                 <li>Is this still relevant? Do I need it?</li>
                 <li>How should I process that on backend?</li>
             </ul>
@@ -72,9 +72,11 @@
 
         <section>
             <h2>File uploads!</h2>
-            <p>They are changing with the rest of web technologies</p>
-            <p>Quite important, especially in enterprise software</p>
-            <p>Sign of quality</p>
+            <ul>
+                <li>They are changing with the rest of web</li>
+                <li>Quite important, especially in enterprise software</li>
+                <li>Sign of quality</li>
+            </ul>
             <!-- reaction -->
         </section>
 
@@ -125,7 +127,6 @@
                 <p>~2000: AJAX introduced - XMLHttpRequest</p>
                 <p>~2010: multiple files can be selected</p>
                 <p>2010-2011: HTML5 File API</p>
-                <p>2011: WebSockets standardized</p>
             </div>
         </section>
 
@@ -137,13 +138,17 @@
             <h2>Future?</h2>
             <ul>
                 <li>Less and less files on physical discs</li>
-                <li>Upload from cloud of your choice</li>
+                <li>Uploading from cloud of your choice</li>
                 <li><code style="color: #400">&lt;input type="cloud"&gt;</code></li>
                 <li>Anyone up for writing a nice library?</li>
             </ul>
         </section>
 
         <section>
+            <section>
+                <h2>Let's code</h2>
+                <!-- reaction -->
+            </section>
             <section>
                 <h2>Textbook Example</h2>
                         <pre><code class="html" data-trim>
@@ -162,7 +167,7 @@
             <section>
                 <h4>enctype=<br>"multipart/form-data"</h4>
                 <img src="images/multipart-formdata.png">
-                <p>Each form field has certain structure and is separated by special boundary. <i>Binary file upload!</i>
+                <p>Each form field has defined structure and is separated by special boundary. <i>Binary file upload!</i>
                 </p>
             </section>
         </section>
@@ -220,6 +225,19 @@ if __name__ == "__main__":
                 <h4>Post/Redirect/Get design pattern</h4>
                 <img src="images/post_redirect_get.png">
             </section>
+            <section>
+                <h2>Security</h2>
+                <p>Imagine:</p>
+                <pre><code class="html" data-trim>
+<form name="foo" method="post" enctype="multipart/form-data">
+    <input type="file" value="/etc/passwd">
+</form>
+
+<script>d0cument.foo.submit();</script>
+                </code></pre>
+                <p>All <code>value</code> attributes are ignored by browser</p>
+                <p><code>&lt;input type=file&gt;</code> is readonly after selecting the file in >=IE8</p>
+            </section>
         </section>
 
         <section>
@@ -244,7 +262,7 @@ $('#upload-file').on('click', function(e){
     });
 });
                     </code></pre>
-                    <p class="fragment">Wrong!</p>
+                    <p class="fragment" style="color: #900;">Wrong!</p>
             </section>
             <section>
                 <h2>Upload hack: iframe</h2>
@@ -269,6 +287,62 @@ myform.addEventListener('submit', function() {
         alert("File uploaded!")
     });
 });
+                </code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2 style="text-transform: none;">XMLHttpRequest</h2>
+                <ul>
+                    <li>XMLHttpRequest 1 standardized in 2006</li>
+                    <li>XHR1 + <b>FormData</b> + transfer progress + etc = XHR2 (2008-)</li>
+                    <li style="color: #060">XMLHttpRequest 2 already has 90% browser support*</li>
+                    <li>XHR2 is not "part of HTML5"</li>
+                </ul>
+                <p><small>* IE10+</small></p>
+            </section>
+
+            <section>
+                <h2 style="text-transform: none;">FormData</h2>
+                <p>Store key/value pairs and <code>.send()</code> them through XHR</p>
+                    <pre><code class="html" data-trim>
+<form method="POST" action="/upload" id="myform">
+    <input type="file" id="myfile" name="myfile">
+    <input type="submit" value="Upload" name="submit">
+</form>
+                    </code></pre>
+                    <pre><code class="javascript" data-trim>
+var fd = new FormData();
+fd.append('myfile', input.files[0]);
+// or simply new FormData(document.getElementById('myform'))
+
+var xhr = new XMLHttpRequest();
+xhr.onload = function() {
+    alert("File uploaded!");
+};
+xhr.open("POST", "/upload");
+xhr.send(fd);
+                    </code></pre>
+            </section>
+            <section>
+                <h2>HTML5 File API</h2>
+                <p style="color: #060">Browser support: 89%+</p>
+                <ul>
+                    <li><b>File</b> - readonly attributes of file on disk</li>
+                    <li><b>FileList</b> - list of File objects ~ &lt;input type="file" multiple&gt;</li>
+                    <li><b>Blob</b> - raw binary data, access to range of bytes</li>
+                    <li><b>FileReader</b> - interface/events for reading Files and Blobs</li>
+                </ul>
+            </section>
+            <section>
+                <h4>File API support check</h4>
+                <pre><code class="javascript" data-trim>
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    // Great success! All the File APIs are supported.
+} else {
+    // This is the code you will throw away... someday
+}
                 </code></pre>
             </section>
         </section>
@@ -315,84 +389,10 @@ dropzone.addEventListener("drop", FileSelectHandler, false);
             </section>
         </section>
 
-
         <section>
-            <h2>Cross-site file uploads</h2>
-            <p>Say you want to upload file to <b>http://yoursharedstorage.com</b></p>
-            <p>No changes are needed to client/frontend</p>
-            <p>But storage server must reply to POST/OPTIONS with:</p>
-            <pre><code data-trim>
-Access-Control-Allow-Origin: http://yourothersite.com
-Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description
-            </code></pre>
-        </section>
-
-        <section>
-            <section>
-                <h2 style="text-transform: none;">XMLHttpRequest(s)</h2>
-                <p>XMLHttpRequest 1 Standardized (~2006)</p>
-                <p>XMLHttpRequest 1: Extended with progress, files</p>
-                <p>XMLHttpRequest 2 already has 90% support</p>
-                <p>XMLHttpRequest 2 isn't HTML5</p>
-                <p>...</p>
-            </section>
-<!--
-            <section>
-                <h2>Web Standards</h2>
-                <p>
-                    <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-                        &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q>
-                </p>
-            </section>
--->
-            <section>
-                <h2>File API</h2>
-                <p style="color: #060">Browser support: 89%+</p>
-                <ul>
-                    <li><b>File</b> - readonly attributes of file on disk</li>
-                    <li><b>FileList</b> - list of File objects ~ &lt;input type="file" multiple&gt;</li>
-                    <li><b>Blob</b> - raw binary data, access to range of bytes</li>
-                    <li><b>FileReader</b> - interface/events for reading Files and Blobs</li>
-                </ul>
-            </section>
-            <section>
-                <h4>File API support check</h4>
-                <pre><code class="javascript" data-trim>
-if (window.File && window.FileReader && window.FileList && window.Blob) {
-    // Great success! All the File APIs are supported.
-} else {
-    // This is the code you will throw away... someday
-}
-                </code></pre>
-            </section>
-        </section>
-
-
-        <section>
-            <section>
-                <h2>HTML5 FormData</h2>
-                    <pre><code class="html" data-trim>
-<form method="POST" action="/upload" enctype="multipart/form-data">
-    <input type="file" id="myfile" name="myfile">
-    <input type="submit" value="Upload" name="submit">
-</form>
-                    </code></pre>
-                    <pre><code class="javascript" data-trim>
-var fd = new FormData();
-fd.append('myfile', input.files[0]);
-
-var xhr = new XMLHttpRequest();
-xhr.onload = function() {
-    alert("File uploaded!");
-};
-xhr.open("POST", "/upload");
-xhr.send(fd);
-                    </code></pre>
-            </section>
-            <section>
-                <h4>Upload progress</h4>
-                <div style="font-size: 0.7em; color: #060;">Browser support: 86%+</div>
-                <pre><code class="html" style="font-size: 0.7em;" data-trim>
+            <h4>Upload progress</h4>
+            <div style="font-size: 0.7em; color: #060;">Browser support: 86%+</div>
+            <pre><code class="html" style="font-size: 0.7em;" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
     <input type="file" id="myfile" name="myfile">
     <input type="submit" value="Upload" name="submit">
@@ -417,11 +417,18 @@ myform.addEventListener("submit", function handleFormSubmit(e) {
     xhr.open(myform.method, myform.action);
     xhr.send(new FormData(myform));
 }, false);
-                </code></pre>
-            </section>
-            <section>
-                <h2>Upload file by chunks</h2>
-                <pre><code class="javascript stretch" data-trim>
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>File preview</h2>
+            <p>FileReader, Blobs</p>
+        </section>
+
+
+        <section>
+            <h2>Upload file by chunks</h2>
+            <pre><code class="javascript stretch" data-trim>
 function upload(blobOrFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/server', true);
@@ -442,26 +449,76 @@ input.addEventListener('change', function(e) {
         end = start + BYTES_PER_CHUNK;
     }
 }, false);
+            </code></pre>
+        </section>
+
+        <section data-background="images/chunk.jpg">
+            <h2>Chunks? Chuck?</h2>
+
+            <p>By splitting into chunks you can:</p>
+            <ul>
+                <li>Pause</li>
+                <li>Resume</li>
+                <li>Retry failed chunks</li>
+                <li>Bypass request size limits</li>
+            </ul>
+            <p>All you need is to reassemble chunks on server</p>
+            <p>Libraries: <a href="http://www.resumablejs.com/">resumable.js</a>, Flow.js (same?)</p>
+        </section>
+
+        <section>
+            <h2>Cross-site file uploads</h2>
+            <p>Say you want to upload file to <b>http://yoursharedstorage.com</b></p>
+            <p>No changes are needed on client/frontend</p>
+            <p>But storage server must reply to POST/OPTIONS with:</p>
+            <pre><code data-trim>
+Access-Control-Allow-Origin: http://yourothersite.com
+Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description
+            </code></pre>
+        </section>
+
+        <section>
+            <section>
+                <h2>Libraries</h2>
+                <!-- reaction -->
+            </section>
+            <section>
+                <h2>jQuery File upload 20k&#9734;</h2>
+                <p><a href="https://github.com/blueimp/jQuery-File-Upload">https://github.com/blueimp/jQuery-File-Upload</a></p>
+                <pre><code class="html stretch" data-trim>
+<input id="fileupload" type="file" name="files[]" multiple
+    data-url="/path/to/upload/handler.json"
+    data-sequential-uploads="true"
+    data-form-data='{"script": "true"}'>
+
+$('#fileupload').fileupload();
+                    </code></pre>
+            </section>
+            <section>
+                <h2>httpinvoke 300+&#9734;</h2>
+                <p><a href="https://github.com/jakutis/httpinvoke">https://github.com/jakutis/httpinvoke</a> (No-deps!)</p>
+                <pre><code class="javascript stretch" data-trim>
+var file = input.files[0]
+httpinvoke('/upload', 'POST', {
+    input: file,
+    headers: {
+        'Content-Type': 'application/octet-stream'
+    }
+}).then(function(response) {
+    if(response.statusCode === 201) {
+        // OK
+    } else {
+        // ERROR
+    }
+}, function(err) {
+    // ERROR: err.message
+}, function(pe) {
+    if(pe.type === 'upload') {
+        // pe.current contains uploaded bytes
+    }
+});
                 </code></pre>
             </section>
-        </section>
-
-        <section>
-            <h2>Security</h2>
-            <p><code>&lt;input type=file /&gt;</code> is readonly after selecting the file in >= IE8, for security reasons</p>
-        </section>
-
-        <section>
-            <h2>...</h2>
-            <p>
-                Progress bars <br>
-                Uploading whole folders <br>
-                Is file upload resume possible? <br>
-                Immediate preview: http://www.javascripture.com/FileReader <br>
-                File upload through WebSockets API <br>
-                jquery File upload plugin <br>
-                microlibs <br>
-            </p>
         </section>
 
         <section>
@@ -476,7 +533,7 @@ input.addEventListener('change', function(e) {
             </p>
             <p>
                 <b>WebSockets Upload</b>
-                <small>Using sockets to upload files and their chunks</small>
+                <small>Using sockets to upload files and chunks</small>
             </p>
             <p>...</p>
         </section>

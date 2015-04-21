@@ -1,15 +1,18 @@
 <h1>iframe hack</h1>
-<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
-<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
+<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0"></iframe>
+<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg" id="myform">
     <input type="file" id="myfile" name="myfile">
     <input type="submit" value="Upload" name="submit">
 </form>
 <script>
-    var iframe = document.getElementById('uploadTrg');
-    var input = document.getElementById('myfile');
-    input.addEventListener('change', function() {
-        iframe.addEventListener('load', function(){
-            alert("The file is uploaded!");
+    var myform = document.getElementById('myform');
+    myform.addEventListener('submit', function() {
+        var iframe = document.getElementById('uploadTrg'),
+            iframeClone = iframe.cloneNode(true);
+        iframe.parentNode.replaceChild(iframeClone, iframe);
+        // Hook to iframe's load event!
+        iframeClone.addEventListener('load', function(){
+            alert("File uploaded!")
         });
     });
 </script>

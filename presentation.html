@@ -144,14 +144,6 @@
         </section>
 
         <section>
-            <h2>Web Standards</h2>
-            <p>
-                <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-                    &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q>
-            </p>
-        </section>
-
-        <section>
             <section>
                 <h2>Textbook Example</h2>
                         <pre><code class="html" data-trim>
@@ -257,25 +249,33 @@ $('#upload-file').on('click', function(e){
             <section>
                 <h2>Upload hack: iframe</h2>
                 <pre><code class="html stretch" data-trim>
-<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
-<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
+<iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0"></iframe>
+
+<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg" id="myform">
     <input type="file" id="myfile" name="myfile">
     <input type="submit" value="Upload" name="submit">
 </form>
-<script>
-    var iframe = document.getElementById('uploadTrg');
-    iframe.addEventListener('load', function(){
-        alert("The file is uploaded!");
+                </code></pre>
+                <pre><code class="javascript stretch" data-trim>
+var myform = document.getElementById('myform');
+
+myform.addEventListener('submit', function() {
+    var iframe = document.getElementById('uploadTrg'),
+        iframeClone = iframe.cloneNode(true);
+    // Replace iframe with fresh one
+    iframe.parentNode.replaceChild(iframeClone, iframe);
+    // Hook to iframe's load event and wait
+    iframeClone.addEventListener('load', function(){
+        alert("File uploaded!")
     });
-</script>
+});
                 </code></pre>
             </section>
         </section>
 
         <section>
             <section>
-                <h2>Drag and drop it</h2>
-                <h4>HTML</h4>
+                <h2>Drag and drop: HTML</h2>
                 <pre><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data">
     <input type="file" id="myfile" name="myfile">
@@ -285,9 +285,10 @@ $('#upload-file').on('click', function(e){
     <input type="submit" value="Upload" name="submit">
 </form>
                 </code></pre>
+                <img src="images/dnd.png" style="border: 1px solid #666;">
             </section>
             <section>
-                <h4>Drag and drop: JavaScript</h4>
+                <h2>Drag and drop: JavaScript</h2>
                 <pre><code class="javascript stretch" data-trim>
 var dropzone = document.getElementById('dropzone');
 
@@ -302,7 +303,7 @@ function FileDragHover(e) {
 function FileSelectHandler(e) {
     // cancel event and hover styling
     FileDragHover(e);
-    // fetch FileList (HTML5) object
+    // fetch FileList object: IE, Opera || others
     var files = e.target.files || e.dataTransfer.files;
     handleFiles(files);
 }
@@ -329,11 +330,21 @@ Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, 
         <section>
             <section>
                 <h2 style="text-transform: none;">XMLHttpRequest(s)</h2>
-                <p>First XMLHttpRequest (~2006)</p>
+                <p>XMLHttpRequest 1 Standardized (~2006)</p>
+                <p>XMLHttpRequest 1: Extended with progress, files</p>
                 <p>XMLHttpRequest 2 already has 90% support</p>
                 <p>XMLHttpRequest 2 isn't HTML5</p>
                 <p>...</p>
             </section>
+<!--
+            <section>
+                <h2>Web Standards</h2>
+                <p>
+                    <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+                        &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q>
+                </p>
+            </section>
+-->
             <section>
                 <h2>File API</h2>
                 <p style="color: #060">Browser support: 89%+</p>

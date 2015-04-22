@@ -23,7 +23,7 @@ def upload():
 @app.route("/")
 def index():
     items = ['<a href="/{0}">{0}</a>'.format(x)
-             for x in ['simple', 'async', 'iframe', 'dnd', 'progress']]
+             for x in ['simple', 'async', 'iframe', 'dnd', 'progress', 'filereader']]
     return "<br>".join(items)
 
 @app.route("/simple")
@@ -45,6 +45,10 @@ def dnd():
 @app.route("/progress")
 def progress():
     return app.send_static_file("4_progress.html")
+
+@app.route("/filereader")
+def filereader():
+    return app.send_static_file("5_filereader.html")
 
 
 if __name__ == "__main__":

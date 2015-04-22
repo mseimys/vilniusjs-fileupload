@@ -1,0 +1,25 @@
+<input id="myfile" type="file">
+<div id="preview"></div>
+
+<script>
+var upload = document.getElementById('myfile'),
+    preview = document.getElementById('preview');
+
+upload.onchange = function (e) {
+    e.preventDefault();
+
+    var file = upload.files[0],
+        reader = new FileReader();
+    reader.onload = function (event) {
+        var img = document.createElement('img');
+        img.src = event.target.result;
+        if (img.width > 560) {
+            img.width = 560;
+        }
+        preview.innerHTML = '';
+        preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+    return false;
+};
+</script>

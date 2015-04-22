@@ -55,20 +55,32 @@
         </section>
 
         <section>
-            <p>About me, my company, LaTeX</p>
+            <section>
+                <h2>Matas Šeimys</h2>
+                <p>Full Stack and desktop app developer</p>
+                <p>A lot of Python</p>
+                <p>Plenty of JavaScript (jQuery, Angular, node)</p>
+                <p style="color: #666;"><small>Perl</small></p>
+            </section>
+            <section data-background="images/vtex.png">
+            </section>
         </section>
 
         <section>
             <h2>File uploads?</h2>
             <p><i>Let me just google it...</i></p>
-            <!-- reaction -->
-            <ul class="fragment">
+        </section>
+
+        <section>
+            <ul>
                 <li>Why so complicated?</li>
-                <li>How to do it on my framework X/Y/Z?</li>
                 <li>Is this still relevant? Do I need it?</li>
+                <li>How to do it on my framework X/Y/Z?</li>
                 <li>How should I process that on backend?</li>
             </ul>
+            <img src="reactions/big-lebowski-confused.gif">
         </section>
+
 
         <section>
             <h2>File uploads!</h2>
@@ -146,26 +158,33 @@
 
         <section>
             <section>
-                <h2>Let's code</h2>
+                <h2>Let's look at code</h2>
                 <!-- reaction -->
             </section>
             <section>
-                <h2>Textbook Example</h2>
+                <h2>Textbook Examples</h2>
                         <pre><code class="html" data-trim>
+<form method="POST" action="/upload">
+    First name: <input type="text" name="fname"><br>
+    Last name: <input type="text" name="lname"><br>
+    <input type="submit" value="Submit">
+</form>
+                        </code></pre>
+                        <pre class="fragment"><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data">
-    <input type="file" id="myfile" name="myfile">
-    <input type="submit" value="Upload" name="submit">
+    <input type="file" name="myfile[]" multiple>
+    <input type="submit" value="Upload">
 </form>
                         </code></pre>
             </section>
             <section>
-                <h4>enctype=<br>"application/x-www-form-urlencoded"</h4>
+                <h4 style="text-transform: none;">Form enctype=<br>"application/x-www-form-urlencoded"</h4>
                 <img src="images/x-www-form-urlencoded.png">
-                <p>Default, simple encoding: name=value strings separated by ampersands (&amp;) and uses special escape.
+                <p>Default, simple request encoding: name=value strings separated by ampersands (&amp;) and uses special escape.
                 </p>
             </section>
             <section>
-                <h4>enctype=<br>"multipart/form-data"</h4>
+                <h4 style="text-transform: none;">Form enctype=<br>"multipart/form-data"</h4>
                 <img src="images/multipart-formdata.png">
                 <p>Each form field has defined structure and is separated by special boundary. <i>Binary file upload!</i>
                 </p>
@@ -227,7 +246,7 @@ if __name__ == "__main__":
             </section>
             <section>
                 <h2>Security</h2>
-                <p>Imagine:</p>
+                <p><i>Imagine...</i></p>
                 <pre><code class="html" data-trim>
 <form name="foo" method="post" enctype="multipart/form-data">
     <input type="file" value="/etc/passwd">
@@ -253,6 +272,14 @@ if __name__ == "__main__":
     <input type="file" id="myfile" name="myfile">
     <button id="upload-file">Upload!</button>
 </form>
+                    </code></pre>
+                    <pre><code class="javascript" data-trim>
+$('#upload-file').on('click', function(e){
+    e.preventDefault();
+    $.post("/upload", $("#myform").serialize(), function(data) {
+        // Successfully uploaded data!?
+    });
+});
                     </code></pre>
                     <pre><code class="javascript" data-trim>
 $('#upload-file').on('click', function(e){
@@ -495,6 +522,23 @@ $('#fileupload').fileupload();
                     </code></pre>
             </section>
             <section>
+                <h2>Dropzone.js 7k+&#9734;</h2>
+                <p>Drag’n’drop file uploads with image previews</p>
+                <pre><code class="html" data-trim>
+<form action="/upload" class="dropzone" id="my-awesome-dropzone">
+  <div class="dz-message">
+    Drop files here or click to upload.
+  </div>
+</form>
+                </code></pre>
+                <pre><code class="javascript" data-trim>
+Dropzone.options.myAwesomeDropzone = {
+  paramName: "file", // The name that will be used to transfer the file
+  maxFilesize: 2     // MB
+};
+                </code></pre>
+            </section>
+            <section>
                 <h2>httpinvoke 300+&#9734;</h2>
                 <p><a href="https://github.com/jakutis/httpinvoke">https://github.com/jakutis/httpinvoke</a> (No-deps!)</p>
                 <pre><code class="javascript stretch" data-trim>
@@ -505,15 +549,15 @@ httpinvoke('/upload', 'POST', {
         'Content-Type': 'application/octet-stream'
     }
 }).then(function(response) {
-    if(response.statusCode === 201) {
+    if (response.statusCode === 201) {
         // OK
     } else {
-        // ERROR
+        // SERVER ERROR
     }
 }, function(err) {
-    // ERROR: err.message
+    // NETWORK ERROR: err.message
 }, function(pe) {
-    if(pe.type === 'upload') {
+    if (pe.type === 'upload') {
         // pe.current contains uploaded bytes
     }
 });

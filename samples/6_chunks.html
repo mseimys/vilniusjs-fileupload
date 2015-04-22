@@ -1,0 +1,29 @@
+<h1>Chunks Demo</h1>
+<input id="myfile" name="myfile" type="file">
+
+<script>
+function upload(blob, size, start, end) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload_chunks?size='+size+'&start='+start+'&end='+end, true);
+    xhr.onload = function(e) {
+        console.log("Chunk uploaded!");
+    };
+    xhr.send(blob.slice(start, end));
+}
+
+var input = document.getElementById('myfile');
+input.addEventListener('change', function(e) {
+    var blob = this.files[0];
+    const BYTES_PER_CHUNK = 1024 * 100;  // 0.1MB chunk sizes.
+    const SIZE = blob.size;
+    var start = 0;
+    var end = BYTES_PER_CHUNK;
+
+    while(start < SIZE) {
+        upload(blob, SIZE, start, end);  // blobs are easily slicable
+        start = end;
+        end = start + BYTES_PER_CHUNK;
+    }
+}, false);
+
+</script>

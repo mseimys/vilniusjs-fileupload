@@ -293,26 +293,33 @@ $('#upload-file').on('click', function(e){
             </section>
             <section>
                 <h2>Upload hack: iframe</h2>
+                <img src="images/iframe-method-step-1.png">
+                <img src="images/iframe-method-step-2.png">
+                <img src="images/iframe-method-step-3.png">
+            </section>
+            <section>
+                <h2>Upload hack: iframe</h2>
                 <pre><code class="html stretch" data-trim>
 <iframe id="uploadTrg" name="uploadTrg" height="0" width="0" frameborder="0"></iframe>
 
-<form method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg" id="myform">
-    <input type="file" id="myfile" name="myfile">
-    <input type="submit" value="Upload" name="submit">
+<form id="myform" method="POST" action="/upload" enctype="multipart/form-data" target="uploadTrg">
+    <input type="file" name="myfile">
+    <input type="submit" value="Upload">
 </form>
                 </code></pre>
                 <pre><code class="javascript stretch" data-trim>
 var myform = document.getElementById('myform');
-
+var file_was_uploaded = function() {
+    alert("File uploaded!");
+    // You can get content of iframe:
+    console.log(this.contentWindow.document.body.innerHTML);
+};
 myform.addEventListener('submit', function() {
-    var iframe = document.getElementById('uploadTrg'),
-        iframeClone = iframe.cloneNode(true);
-    // Replace iframe with fresh one
-    iframe.parentNode.replaceChild(iframeClone, iframe);
-    // Hook to iframe's load event and wait
-    iframeClone.addEventListener('load', function(){
-        alert("File uploaded!")
-    });
+    var iframe = document.getElementById('uploadTrg');
+    // Remove previous event listener, if any
+    iframe.removeEventListener('load', file_was_uploaded);
+    // Hook to iframe's load event!
+    iframe.addEventListener('load', file_was_uploaded);
 });
                 </code></pre>
             </section>
@@ -325,7 +332,6 @@ myform.addEventListener('submit', function() {
                     <li>XMLHttpRequest 1 standardized in 2006</li>
                     <li>XHR1 + <b>FormData</b> + transfer progress + etc = XHR2 (2008-)</li>
                     <li style="color: #060">XMLHttpRequest 2 already has 90% browser support*</li>
-                    <li>XHR2 is not "part of HTML5"</li>
                 </ul>
                 <p><small>* IE10+</small></p>
             </section>
@@ -383,7 +389,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
     <div id="dropzone">
         ... or drop files here.
     </div>
-    <input type="submit" value="Upload" name="submit">
+    <input type="submit" value="Upload">
 </form>
                 </code></pre>
                 <img src="images/dnd.png" style="border: 1px solid #666;">
@@ -435,7 +441,7 @@ myform.addEventListener("submit", function handleFormSubmit(e) {
     xhr.onload = function() {
         alert("File uploaded!");
     };
-    xhr.upload.onprogress = function(pe) {  // Progress Event!!
+    xhr.upload.onprogress = function(pe) {  // upload Progress Event!!
         if (pe.lengthComputable) {
             myprogress.value = (pe.loaded / pe.total) * 100;
             myprogress.textContent = myprogress.value;  // Fallback
@@ -471,7 +477,7 @@ input.addEventListener('change', function(e) {
     var end = BYTES_PER_CHUNK;
 
     while(start < SIZE) {
-        upload(blob.slice(start, end));
+        upload(blob.slice(start, end));  // blobs are easily slicable
         start = end;
         end = start + BYTES_PER_CHUNK;
     }
@@ -479,18 +485,18 @@ input.addEventListener('change', function(e) {
             </code></pre>
         </section>
 
-        <section data-background="images/chunk.jpg">
-            <h2>Chunks? Chuck?</h2>
-
-            <p>By splitting into chunks you can:</p>
-            <ul>
-                <li>Pause</li>
-                <li>Resume</li>
-                <li>Retry failed chunks</li>
-                <li>Bypass request size limits</li>
-            </ul>
-            <p>All you need is to reassemble chunks on server</p>
-            <p>Libraries: <a href="http://www.resumablejs.com/">resumable.js</a>, Flow.js (same?)</p>
+        <section data-background-image="images/chunk.jpg">
+            <div style="text-align:right;">
+                <p>By splitting into chunks you can:</p>
+                <ul>
+                    <li>Pause</li>
+                    <li>Resume</li>
+                    <li>Retry failed chunks</li>
+                    <li>Bypass request size limits</li>
+                </ul>
+                <p>All you need is to reassemble<br>chunks on server</p>
+                <p>Library: <a href="http://www.resumablejs.com/">resumable.js</a></p>
+            </div>
         </section>
 
         <section>
@@ -507,7 +513,9 @@ Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, 
         <section>
             <section>
                 <h2>Libraries</h2>
-                <!-- reaction -->
+                <br>
+                <img src="reactions/deps.gif">
+                <p>"Fetching a package with dependencies"</p>
             </section>
             <section>
                 <h2>jQuery File upload 20k&#9734;</h2>
@@ -533,7 +541,7 @@ $('#fileupload').fileupload();
                 </code></pre>
                 <pre><code class="javascript" data-trim>
 Dropzone.options.myAwesomeDropzone = {
-  paramName: "file", // The name that will be used to transfer the file
+  paramName: "myfile", // The name that will be used to transfer the file
   maxFilesize: 2     // MB
 };
                 </code></pre>
@@ -552,10 +560,10 @@ httpinvoke('/upload', 'POST', {
     if (response.statusCode === 201) {
         // OK
     } else {
-        // SERVER ERROR
+        // BAD SERVER REPLY
     }
 }, function(err) {
-    // NETWORK ERROR: err.message
+    // GENERAL ERROR: err.message
 }, function(pe) {
     if (pe.type === 'upload') {
         // pe.current contains uploaded bytes

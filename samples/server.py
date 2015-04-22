@@ -6,6 +6,7 @@ app = Flask(__name__, static_folder='')
 
 UPLOAD_FOLDER = '/tmp'
 
+
 @app.route("/upload", methods=['POST'])
 def upload():
     count = 0
@@ -20,10 +21,19 @@ def upload():
     else:
         return redirect(url_for('index'))
 
+
+@app.route("/upload_chunks", methods=['POST'])
+def upload_chunks():
+    app.logger.info("Chunk info: %s", request.args)
+    chunk_content = request.data
+    # Check to see if all the chunks are there
+    return jsonify(message="Chunk uploaded")
+
+
 @app.route("/")
 def index():
     items = ['<a href="/{0}">{0}</a>'.format(x)
-             for x in ['simple', 'async', 'iframe', 'dnd', 'progress', 'filereader']]
+             for x in ['simple', 'async', 'iframe', 'dnd', 'progress', 'filereader', 'chunks']]
     return "<br>".join(items)
 
 @app.route("/simple")
@@ -49,6 +59,10 @@ def progress():
 @app.route("/filereader")
 def filereader():
     return app.send_static_file("5_filereader.html")
+
+@app.route("/chunks")
+def chunks():
+    return app.send_static_file("6_chunks.html")
 
 
 if __name__ == "__main__":

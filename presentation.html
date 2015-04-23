@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Vilnius.js #15 - File upload</title>
+    <title>File upload - Matas Šeimys - Vilnius.js #15</title>
 
     <meta name="description" content="JavaScript File upload">
-    <meta name="author" content="Matas Seimys, Vytautas Jakutis">
+    <meta name="author" content="Matas Seimys">
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -56,13 +56,16 @@
 
         <section>
             <section>
-                <h2>Matas Šeimys</h2>
-                <p>Full Stack and desktop app developer</p>
+                <h3>Matas Šeimys</h3>
+                <p>Full Stack developer</p>
                 <p>A lot of Python</p>
-                <p>Plenty of JavaScript (jQuery, Angular, node)</p>
+                <p>GUI desktop apps with Qt (Python bindings)</p>
+                <p>Plenty of JavaScript</p>
                 <p style="color: #666;"><small>Perl</small></p>
             </section>
             <section data-background="images/vtex.png">
+            </section>
+            <section data-background="images/vtex_building.jpg">
             </section>
         </section>
 
@@ -72,13 +75,13 @@
         </section>
 
         <section>
+            <img src="reactions/big-lebowski-confused.gif">
             <ul>
                 <li>Why so complicated?</li>
                 <li>Is this still relevant? Do I need it?</li>
                 <li>How to do it on my framework X/Y/Z?</li>
                 <li>How should I process that on backend?</li>
             </ul>
-            <img src="reactions/big-lebowski-confused.gif">
         </section>
 
 
@@ -138,7 +141,8 @@
                 <p>1995: <code style="color: #400">&lt;input type="file"&gt;</code> appears</p>
                 <p>~2000: AJAX introduced - XMLHttpRequest</p>
                 <p>~2010: multiple files can be selected</p>
-                <p>2010-2011: HTML5 File API</p>
+                <p>~2010: XMLHttpRequest 2, FormData</p>
+                <p>~2010: HTML5 File API</p>
             </div>
         </section>
 
@@ -158,24 +162,24 @@
 
         <section>
             <section>
-                <h2>Let's look at code</h2>
+                <h2>Let's see some code</h2>
                 <!-- reaction -->
             </section>
             <section>
                 <h2>Textbook Examples</h2>
-                        <pre><code class="html" data-trim>
+                <pre><code class="html" data-trim>
 <form method="POST" action="/upload">
     First name: <input type="text" name="fname"><br>
     Last name: <input type="text" name="lname"><br>
     <input type="submit" value="Submit">
 </form>
-                        </code></pre>
-                        <pre class="fragment"><code class="html" data-trim>
+                </code></pre>
+                <pre class="fragment"><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data">
     <input type="file" name="myfile[]" multiple>
     <input type="submit" value="Upload">
 </form>
-                        </code></pre>
+                </code></pre>
             </section>
             <section>
                 <h4 style="text-transform: none;">Form enctype=<br>"application/x-www-form-urlencoded"</h4>
@@ -188,6 +192,19 @@
                 <img src="images/multipart-formdata.png">
                 <p>Each form field has defined structure and is separated by special boundary. <i>Binary file upload!</i>
                 </p>
+            </section>
+            <section>
+                <h2>Security</h2>
+                <p><i>Imagine...</i></p>
+                <pre><code class="html" data-trim>
+<form name="foo" method="post" enctype="multipart/form-data">
+    <input type="file" value="/etc/passwd">
+</form>
+
+&lt;script&gt;document.foo.submit();&lt;/script&gt;
+                </code></pre>
+                <p>All <code>value</code> attributes are ignored by browser</p>
+                <p><code>&lt;input type=file&gt;</code> is readonly after selecting the file in >=IE8</p>
             </section>
         </section>
 
@@ -244,19 +261,6 @@ if __name__ == "__main__":
                 <h4>Post/Redirect/Get design pattern</h4>
                 <img src="images/post_redirect_get.png">
             </section>
-            <section>
-                <h2>Security</h2>
-                <p><i>Imagine...</i></p>
-                <pre><code class="html" data-trim>
-<form name="foo" method="post" enctype="multipart/form-data">
-    <input type="file" value="/etc/passwd">
-</form>
-
-<script>d0cument.foo.submit();</script>
-                </code></pre>
-                <p>All <code>value</code> attributes are ignored by browser</p>
-                <p><code>&lt;input type=file&gt;</code> is readonly after selecting the file in >=IE8</p>
-            </section>
         </section>
 
         <section>
@@ -266,7 +270,18 @@ if __name__ == "__main__":
                 <img src="reactions/facepalm.gif">
             </section>
             <section>
-                <h2>Async Upload</h2>
+                <h2>Asynchronous Form Submit</h2>
+                    <pre><code class="javascript" data-trim>
+var XHR = new XMLHttpRequest();
+var body = 'fname=' + encodeURIComponent(fname) + 
+           '&lname=' + encodeURIComponent(lname);
+xhr.open("POST", '/upload',  true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onreadystatechange =  function(){
+    // handle response
+};
+xhr.send(body);
+                    </code></pre>
                     <pre><code class="html stretch" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
     <input type="file" id="myfile" name="myfile">
@@ -281,15 +296,6 @@ $('#upload-file').on('click', function(e){
     });
 });
                     </code></pre>
-                    <pre><code class="javascript" data-trim>
-$('#upload-file').on('click', function(e){
-    e.preventDefault();
-    $.post("/upload", $("#myform").serialize(), function(data) {
-        // Successfully uploaded data!?
-    });
-});
-                    </code></pre>
-                    <p class="fragment" style="color: #900;">Wrong!</p>
             </section>
             <section>
                 <h2>Upload hack: iframe</h2>
@@ -425,17 +431,17 @@ dropzone.addEventListener("drop", FileSelectHandler, false);
         <section>
             <h4>Upload progress</h4>
             <div style="font-size: 0.7em; color: #060;">Browser support: 86%+</div>
-            <pre><code class="html" style="font-size: 0.7em;" data-trim>
+            <pre><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data" id="myform">
     <input type="file" id="myfile" name="myfile">
     <input type="submit" value="Upload" name="submit">
 </form>
 <progress id="myprogress" max="100" value="0"></progress>
                 </code></pre>
-                <pre><code class="javascript stretch" style="font-size: 0.7em;" data-trim>
+                <pre><code class="javascript stretch" data-trim>
 var myform = document.getElementById('myform');
 var myprogress = document.getElementById('myprogress');
-myform.addEventListener("submit", function handleFormSubmit(e) {
+myform.addEventListener("submit", function(e) {
     e.preventDefault();
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -445,8 +451,7 @@ myform.addEventListener("submit", function handleFormSubmit(e) {
         if (pe.lengthComputable) {
             myprogress.value = (pe.loaded / pe.total) * 100;
             myprogress.textContent = myprogress.value;  // Fallback
-        }
-    };
+    }};
     xhr.open(myform.method, myform.action);
     xhr.send(new FormData(myform));
 }, false);
@@ -455,29 +460,52 @@ myform.addEventListener("submit", function handleFormSubmit(e) {
 
         <section>
             <h2>File preview</h2>
-            <p>FileReader, Blobs</p>
+            <pre><code class="html"data-trim>
+<input id="myfile" type="file">
+<div id="preview"></div>
+            </code></pre>
+            <pre><code class="javascript stretch" data-trim>
+var upload = document.getElementById('myfile'),
+    preview = document.getElementById('preview');
+
+upload.onchange = function () {
+    var file = upload.files[0],
+        reader = new FileReader();
+    reader.onload = function (event) {
+        var img = document.createElement('img');
+        img.src = event.target.result;
+        // <img src="data:image/jpeg;base64,/9j/4T/+RXhpZgA..../AAuUI//Z">
+        if (img.width > 500) {
+            img.width = 500;
+        }
+        preview.innerHTML = '';
+        preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+};
+            </code></pre>
         </section>
 
 
         <section>
             <h2>Upload file by chunks</h2>
             <pre><code class="javascript stretch" data-trim>
+var input = document.getElementById('myfile');
 function upload(blobOrFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/server', true);
     xhr.onload = function(e) { ... };
     xhr.send(blobOrFile);
 }
-var input = document.getElementById('myfile');
 input.addEventListener('change', function(e) {
     var blob = this.files[0];
-    const BYTES_PER_CHUNK = 1024 * 1024;  // 1MB chunk sizes.
+    const BYTES_PER_CHUNK = 1024 * 1024;  // 1MB chunk size
     const SIZE = blob.size;
     var start = 0;
     var end = BYTES_PER_CHUNK;
 
     while(start < SIZE) {
-        upload(blob.slice(start, end));  // blobs are easily slicable
+        upload(blob.slice(start, end));  // Blobs are easily slicable
         start = end;
         end = start + BYTES_PER_CHUNK;
     }

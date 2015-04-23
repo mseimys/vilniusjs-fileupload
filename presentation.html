@@ -43,6 +43,7 @@
                 View it, code it, jam - unlock it... <br>
                 -- <b>Daft Punk &ldquo;Technologic&rdquo;</b>
             </blockquote>
+            <br>
             <p>
                 <a href="http://matas.seimys.com">Matas Šeimys</a> <a href="http://twitter.com/mseimys">@mseimys</a>
             </p>
@@ -57,11 +58,15 @@
         <section>
             <section>
                 <h3>Matas Šeimys</h3>
-                <p>Full Stack developer</p>
+                <p>Full stack developer</p>
                 <p>A lot of Python</p>
-                <p>GUI desktop apps with Qt (Python bindings)</p>
+                <p>GUI desktop apps with Qt</p>
                 <p>Plenty of JavaScript</p>
                 <p style="color: #666;"><small>Perl</small></p>
+            </section>
+            <section>
+                <h3>VTEX</h3>
+                <p>Typesetting and publishing services</p>
             </section>
             <section data-background="images/vtex.png">
             </section>
@@ -79,7 +84,7 @@
             <ul>
                 <li>Why so complicated?</li>
                 <li>Is this still relevant? Do I need it?</li>
-                <li>How to do it on my framework X/Y/Z?</li>
+                <li>How to do it on my framework X?</li>
                 <li>How should I process that on backend?</li>
             </ul>
         </section>
@@ -141,8 +146,8 @@
                 <p>1995: <code style="color: #400">&lt;input type="file"&gt;</code> appears</p>
                 <p>~2000: AJAX introduced - XMLHttpRequest</p>
                 <p>~2010: multiple files can be selected</p>
-                <p>~2010: XMLHttpRequest 2, FormData</p>
-                <p>~2010: HTML5 File API</p>
+                <p style="padding-left: 3em;">XMLHttpRequest 2, FormData</p>
+                <p style="padding-left: 3em;">HTML5 File API</p>
             </div>
         </section>
 
@@ -176,7 +181,7 @@
                 </code></pre>
                 <pre class="fragment"><code class="html" data-trim>
 <form method="POST" action="/upload" enctype="multipart/form-data">
-    <input type="file" name="myfile[]" multiple>
+    <input type="file" name="myfile">
     <input type="submit" value="Upload">
 </form>
                 </code></pre>
@@ -272,7 +277,7 @@ if __name__ == "__main__":
             <section>
                 <h2>Asynchronous Form Submit</h2>
                     <pre><code class="javascript" data-trim>
-var XHR = new XMLHttpRequest();
+var xhr = new XMLHttpRequest();
 var body = 'fname=' + encodeURIComponent(fname) + 
            '&lname=' + encodeURIComponent(lname);
 xhr.open("POST", '/upload',  true);
@@ -336,10 +341,10 @@ myform.addEventListener('submit', function() {
                 <h2 style="text-transform: none;">XMLHttpRequest</h2>
                 <ul>
                     <li>XMLHttpRequest 1 standardized in 2006</li>
-                    <li>XHR1 + <b>FormData</b> + transfer progress + etc = XHR2 (2008-)</li>
-                    <li style="color: #060">XMLHttpRequest 2 already has 90% browser support*</li>
+                    <li>XHR1 + <b>FormData</b> + transfer progress + etc = XHR2</li>
+                    <li style="color: #060">XMLHttpRequest 2 now has 90% browser support*</li>
                 </ul>
-                <p><small>* IE10+</small></p>
+                <p><small>* IE10+, <a href="http://caniuse.com">http://caniuse.com</a></small></p>
             </section>
 
             <section>
@@ -348,13 +353,14 @@ myform.addEventListener('submit', function() {
                     <pre><code class="html" data-trim>
 <form method="POST" action="/upload" id="myform">
     <input type="file" id="myfile" name="myfile">
-    <input type="submit" value="Upload" name="submit">
+    <input type="submit" value="Upload">
 </form>
                     </code></pre>
                     <pre><code class="javascript" data-trim>
 var fd = new FormData();
 fd.append('myfile', input.files[0]);
-// or simply new FormData(document.getElementById('myform'))
+// === or ===
+var fd = new FormData(document.getElementById('myform'));
 
 var xhr = new XMLHttpRequest();
 xhr.onload = function() {
@@ -403,8 +409,6 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
             <section>
                 <h2>Drag and drop: JavaScript</h2>
                 <pre><code class="javascript stretch" data-trim>
-var dropzone = document.getElementById('dropzone');
-
 function FileDragHover(e) {
     // dropped file is opened in browser by default
     e.stopPropagation();
@@ -412,7 +416,6 @@ function FileDragHover(e) {
     // proper hover styling is really important!!
     e.target.className = (e.type == "dragover" ? "hover" : "");
 }
-
 function FileSelectHandler(e) {
     // cancel event and hover styling
     FileDragHover(e);
@@ -420,7 +423,7 @@ function FileSelectHandler(e) {
     var files = e.target.files || e.dataTransfer.files;
     handleFiles(files);
 }
-
+var dropzone = document.getElementById('dropzone');
 dropzone.addEventListener("dragover", FileDragHover, false);
 dropzone.addEventListener("dragenter", FileDragHover, false);
 dropzone.addEventListener("drop", FileSelectHandler, false);
@@ -543,7 +546,7 @@ Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, 
                 <h2>Libraries</h2>
                 <br>
                 <img src="reactions/deps.gif">
-                <p>"Fetching a package with dependencies"</p>
+                <p><i>Fetching a package with dependencies</i></p>
             </section>
             <section>
                 <h2>jQuery File upload 20k&#9734;</h2>
@@ -558,7 +561,8 @@ $('#fileupload').fileupload();
                     </code></pre>
             </section>
             <section>
-                <h2>Dropzone.js 7k+&#9734;</h2>
+                <h2>Dropzone.js 8k&#9734;</h2>
+                <p><a href="http://www.dropzonejs.com/">http://www.dropzonejs.com</a></p>
                 <p>Drag’n’drop file uploads with image previews</p>
                 <pre><code class="html" data-trim>
 <form action="/upload" class="dropzone" id="my-awesome-dropzone">
@@ -570,7 +574,7 @@ $('#fileupload').fileupload();
                 <pre><code class="javascript" data-trim>
 Dropzone.options.myAwesomeDropzone = {
   paramName: "myfile", // The name that will be used to transfer the file
-  maxFilesize: 2     // MB
+  maxFilesize: 2       // MB
 };
                 </code></pre>
             </section>
@@ -602,26 +606,41 @@ httpinvoke('/upload', 'POST', {
         </section>
 
         <section>
-            <h2>Ideas for future talks</h2>
-            <p>
-                <b>HTTP/2</b>
-                <small>Pushing content, performance (minification/merging requests)</small>
-            </p>
-            <p>
-                <b>WebRTC</b>
-                <small>Web Real-Time Communication: voice, video, p2p file sharing</small>
-            </p>
-            <p>
-                <b>WebSockets Upload</b>
-                <small>Using sockets to upload files and chunks</small>
-            </p>
-            <p>...</p>
+            <h2>Wrapping up</h2>
+            <ul>
+                <li>Make your calls asynchronous<div style="color: #090;">FormData, XMLHttpRequest</div></li>
+                <li>Allow user to drag'n'drop<div style="color: #090;">drop, HTML5 FileList</div></li>
+                <li>Provide user with nice feedback<div style="color: #090;">XHR2, Progress Events, File Preview</div></li>
+                <li>Know your users:<div style="color: #090;">89% could actually be 98%</div></li>
+                <li>Use libraries ... responsively</li>
+            </ul>
+            <br><br>
+            <h3>Thanks!</h3>
         </section>
 
         <section>
-            <h2>Resources</h2>
-            <p>https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support</p>
-            <p>http://www.html5rocks.com/en/tutorials/file/xhr2/</p>
+            <section>
+                <h2>Ideas for future talks</h2>
+                <p>
+                    <b>HTTP/2</b>
+                    <small>Pushing content, performance (minification/merging requests)</small>
+                </p>
+                <p>
+                    <b>WebRTC</b>
+                    <small>Web Real-Time Communication: voice, video, p2p file sharing</small>
+                </p>
+                <p>
+                    <b>WebSockets Upload</b>
+                    <small>Using sockets to upload files and chunks</small>
+                </p>
+                <p>...</p>
+            </section>
+
+            <section>
+                <h2>Resources</h2>
+                <p><a href="https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support">https://github.com/blueimp/jQuery-File-Upload/wiki/Browser-support</a></p>
+                <p><a href="http://www.html5rocks.com/en/tutorials/file/xhr2/">http://www.html5rocks.com/en/tutorials/file/xhr2</a></p>
+            </section>
         </section>
     </div>
 

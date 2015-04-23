@@ -58,7 +58,7 @@
         <section>
             <section>
                 <h3>Matas Šeimys</h3>
-                <p>Full stack developer</p>
+                <p>Full stack development</p>
                 <p>A lot of Python</p>
                 <p>GUI desktop apps with Qt</p>
                 <p>Plenty of JavaScript</p>
@@ -67,8 +67,12 @@
             <section>
                 <h3>VTEX</h3>
                 <p>Typesetting and publishing services</p>
+                <p>We process scientific articles written in LaTeX</p>
             </section>
             <section data-background="images/vtex.png">
+            </section>
+            <section>
+                <img src="images/file_extensions.png">
             </section>
             <section data-background="images/vtex_building.jpg">
             </section>
@@ -140,7 +144,7 @@
         </section>
 
         <section>
-            <h2>History</h2>
+            <h2>Boring History Slide</h2>
             <div style="text-align: left; margin-left: 50px">
                 <p>1993: HTML is born</p>
                 <p>1995: <code style="color: #400">&lt;input type="file"&gt;</code> appears</p>
@@ -167,13 +171,14 @@
 
         <section>
             <section>
-                <h2>Let's see some code</h2>
+                <img src="reactions/boring.gif">
+                <h2 class="fragment">OK, let's see some code</h2>
                 <!-- reaction -->
             </section>
             <section>
                 <h2>Textbook Examples</h2>
                 <pre><code class="html" data-trim>
-<form method="POST" action="/upload">
+<form method="POST" action="/submit">
     First name: <input type="text" name="fname"><br>
     Last name: <input type="text" name="lname"><br>
     <input type="submit" value="Submit">
@@ -269,6 +274,17 @@ if __name__ == "__main__":
         </section>
 
         <section>
+            <h2>Cross-site file uploads</h2>
+            <p>Say you want to upload file to <b>http://yoursharedstorage.com</b></p>
+            <p>No changes are needed on client/frontend</p>
+            <p>But storage server must reply to POST/OPTIONS with:</p>
+            <pre><code data-trim>
+Access-Control-Allow-Origin: http://yourothersite.com
+Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description
+            </code></pre>
+        </section>
+
+        <section>
             <section>
                 <h2>Uploading Asynchronously</h2>
                 <p style="color:#666;">&lt;!-- here be list of benefits --&gt;</p>
@@ -279,7 +295,7 @@ if __name__ == "__main__":
                     <pre><code class="javascript" data-trim>
 var xhr = new XMLHttpRequest();
 var body = 'fname=' + encodeURIComponent(fname) + 
-           '&lname=' + encodeURIComponent(lname);
+           '&amp;lname=' + encodeURIComponent(lname);
 xhr.open("POST", '/upload',  true);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 xhr.onreadystatechange =  function(){
@@ -409,6 +425,12 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
             <section>
                 <h2>Drag and drop: JavaScript</h2>
                 <pre><code class="javascript stretch" data-trim>
+var dropzone = document.getElementById('dropzone');
+dropzone.addEventListener("dragover", FileDragHover, false);
+dropzone.addEventListener("dragenter", FileDragHover, false);
+dropzone.addEventListener("drop", FileSelectHandler, false);
+                </code></pre>
+                <pre><code class="javascript stretch" data-trim>
 function FileDragHover(e) {
     // dropped file is opened in browser by default
     e.stopPropagation();
@@ -423,10 +445,6 @@ function FileSelectHandler(e) {
     var files = e.target.files || e.dataTransfer.files;
     handleFiles(files);
 }
-var dropzone = document.getElementById('dropzone');
-dropzone.addEventListener("dragover", FileDragHover, false);
-dropzone.addEventListener("dragenter", FileDragHover, false);
-dropzone.addEventListener("drop", FileSelectHandler, false);
                 </code></pre>
             </section>
         </section>
@@ -468,18 +486,18 @@ myform.addEventListener("submit", function(e) {
 <div id="preview"></div>
             </code></pre>
             <pre><code class="javascript stretch" data-trim>
-var upload = document.getElementById('myfile'),
+var myfile = document.getElementById('myfile'),
     preview = document.getElementById('preview');
 
-upload.onchange = function () {
-    var file = upload.files[0],
+myfile.onchange = function () {
+    var file = myfile.files[0],
         reader = new FileReader();
     reader.onload = function (event) {
         var img = document.createElement('img');
         img.src = event.target.result;
         // <img src="data:image/jpeg;base64,/9j/4T/+RXhpZgA..../AAuUI//Z">
-        if (img.width > 500) {
-            img.width = 500;
+        if (img.width > 200) {
+            img.width = 200;
         }
         preview.innerHTML = '';
         preview.appendChild(img);
@@ -497,7 +515,7 @@ var input = document.getElementById('myfile');
 function upload(blobOrFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/server', true);
-    xhr.onload = function(e) { ... };
+    xhr.onload = function(e) { /* ... */ };
     xhr.send(blobOrFile);
 }
 input.addEventListener('change', function(e) {
@@ -531,17 +549,6 @@ input.addEventListener('change', function(e) {
         </section>
 
         <section>
-            <h2>Cross-site file uploads</h2>
-            <p>Say you want to upload file to <b>http://yoursharedstorage.com</b></p>
-            <p>No changes are needed on client/frontend</p>
-            <p>But storage server must reply to POST/OPTIONS with:</p>
-            <pre><code data-trim>
-Access-Control-Allow-Origin: http://yourothersite.com
-Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description
-            </code></pre>
-        </section>
-
-        <section>
             <section>
                 <h2>Libraries</h2>
                 <br>
@@ -566,15 +573,15 @@ $('#fileupload').fileupload();
                 <p>Drag’n’drop file uploads with image previews</p>
                 <pre><code class="html" data-trim>
 <form action="/upload" class="dropzone" id="my-awesome-dropzone">
-  <div class="dz-message">
-    Drop files here or click to upload.
-  </div>
+    <div class="dz-message">
+        Drop files here or click to upload.
+    </div>
 </form>
                 </code></pre>
                 <pre><code class="javascript" data-trim>
 Dropzone.options.myAwesomeDropzone = {
-  paramName: "myfile", // The name that will be used to transfer the file
-  maxFilesize: 2       // MB
+    paramName: "myfile", // The name that will be used to transfer the file
+    maxFilesize: 2       // MB
 };
                 </code></pre>
             </section>
@@ -608,8 +615,8 @@ httpinvoke('/upload', 'POST', {
         <section>
             <h2>Wrapping up</h2>
             <ul>
-                <li>Make your calls asynchronous<div style="color: #090;">FormData, XMLHttpRequest</div></li>
-                <li>Allow user to drag'n'drop<div style="color: #090;">drop, HTML5 FileList</div></li>
+                <li>Make your uploads asynchronous<div style="color: #090;">FormData, XMLHttpRequest</div></li>
+                <li>Allow user to drag'n'drop<div style="color: #090;">HTML5 FileList, drop</div></li>
                 <li>Provide user with nice feedback<div style="color: #090;">XHR2, Progress Events, File Preview</div></li>
                 <li>Know your users:<div style="color: #090;">89% could actually be 98%</div></li>
                 <li>Use libraries ... responsively</li>

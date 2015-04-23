@@ -653,8 +653,8 @@ httpinvoke('/upload', 'POST', {
 
 </div>
 
-<script src="/bower_components/reveal.js/lib/js/head.min.js"></script>
-<script src="/bower_components/reveal.js/js/reveal.js"></script>
+<script src="bower_components/reveal.js/lib/js/head.min.js"></script>
+<script src="bower_components/reveal.js/js/reveal.js"></script>
 
 <script>
     // Full list of configuration options available at:
@@ -669,10 +669,10 @@ httpinvoke('/upload', 'POST', {
 
         // Optional reveal.js plugins
         dependencies: [
-            { src: '/bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-            { src: '/bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '/bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
+            { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
         ]
     });
 

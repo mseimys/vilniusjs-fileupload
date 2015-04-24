@@ -12,10 +12,10 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
-    <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="bower_components/reveal.js/css/theme/white.css" id="theme">
+    <link rel="stylesheet" href="components/reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="components/reveal.js/css/theme/white.css" id="theme">
     <!-- Code syntax highlighting -->
-    <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="components/reveal.js/lib/css/zenburn.css">
     <style>
         .reveal section img {
             border: 0;
@@ -131,16 +131,16 @@
                 <img src="images/facebook_photo_upload.jpg">
                 <img src="images/facebook_file_upload.png">
             </section>
-            <!--
             <section>
                 <h3>Current trends</h3>
                 <table><tr><td>
-                    <img src="images/aws_upload.jpg">
+                    <img src="images/aws_upload.jpg"><br>
+                    Amazon Web Services upload
                 </td><td>
-                    <img src="images/rackspace_upload.jpg">
+                    <img src="images/rackspace_upload.jpg"><br>
+                    Rackspace upload
                 </td></tr></table>
             </section>
-            -->
         </section>
 
         <section>
@@ -173,7 +173,6 @@
             <section>
                 <img src="reactions/boring.gif">
                 <h2 class="fragment">OK, let's see some code</h2>
-                <!-- reaction -->
             </section>
             <section>
                 <h2>Textbook Examples</h2>
@@ -653,8 +652,8 @@ httpinvoke('/upload', 'POST', {
 
 </div>
 
-<script src="bower_components/reveal.js/lib/js/head.min.js"></script>
-<script src="bower_components/reveal.js/js/reveal.js"></script>
+<script src="components/reveal.js/lib/js/head.min.js"></script>
+<script src="components/reveal.js/js/reveal.js"></script>
 
 <script>
     // Full list of configuration options available at:
@@ -669,10 +668,10 @@ httpinvoke('/upload', 'POST', {
 
         // Optional reveal.js plugins
         dependencies: [
-            { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-            { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-            { src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
+            { src: 'components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: 'components/reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } }
         ]
     });
 
